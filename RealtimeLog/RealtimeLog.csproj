@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>FileWatcher.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\FileWatcher.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="FileWatcher.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\FileWatcher.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CODE.Framework.Wpf.Mvvm" Version="5.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FileFilterX.Library">
+      <HintPath>D:\Repositories\FileFilterX\FileFilterX.Library\bin\Release\FileFilterX.Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Converters\WatcherChangeTypesToStringConverter.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
+  </ItemGroup>
+
+</Project>

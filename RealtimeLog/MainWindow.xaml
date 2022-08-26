@@ -1,0 +1,341 @@
+﻿<Window x:Class="RealtimeLog.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:RealtimeLog.Converters"
+        xmlns:local="clr-namespace:RealtimeLog"
+        mc:Ignorable="d" WindowStyle="None" ResizeMode="CanResize"
+        Title="File Watcher" Height="450" Width="750"
+        MouseDown="Window_MouseDown" Closing="Window_Closing" PreviewKeyDown="Window_PreviewKeyDown"
+        AllowsTransparency="True" Background="#19FFFFFF">
+    <Window.Resources>
+        <Style x:Key="AddButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" SnapsToDevicePixels="True">
+                            <Grid>
+                                <Ellipse x:Name="MainBackground" Fill="Yellow" Margin="2" SnapsToDevicePixels="True">
+                                    <Ellipse.BitmapEffect>
+                                        <DropShadowBitmapEffect Color="Black" Direction="-80" ShadowDepth="4" Softness="1.5"/>
+                                    </Ellipse.BitmapEffect>
+                                </Ellipse>
+                                <TextBlock Text="+" x:Name="MainForeground"
+                                       FontWeight="Normal" FontSize="30" Foreground="Black"
+                                       TextAlignment="Center" Padding="0,0,0,0" Margin="0,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Margin" TargetName="MainBackground" Value="3"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Margin" TargetName="MainBackground" Value="1.5"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Fill" TargetName="MainBackground" Value="LightGray"/>
+                                <Setter Property="Foreground" TargetName="MainForeground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Separator" TargetType="Rectangle">
+            <Setter Property="Fill" Value="Silver"/>
+        </Style>
+        <Style x:Key="TextSection" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="MenuButton"
+               TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                BorderBrush="Transparent" BorderThickness="0" Background="Transparent"
+                                SnapsToDevicePixels="True">
+                            <Viewbox Width="24" Height="24" Margin="0,0,0,5">
+                                <Canvas Width="24" Height="24" x:Name="canvas">
+                                    <Canvas.Background>
+                                        <SolidColorBrush Color="White" Opacity="0.2"/>
+                                    </Canvas.Background>
+                                    <Path x:Name="path" Fill="White" Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="canvas">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0.3"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Fill" TargetName="path">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0.8"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="WindowsCloseButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter x:Name="WindowButtonPresenter" Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Red"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Background" Value="#00FF0000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="WindowsButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter x:Name="WindowButtonPresenter" Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0.2"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <converters:FileWatchStatusToMediaColorConverter x:Key="FileWatchStatusToColorConverter"/>
+        <converters:BoolToMediaColorConverter x:Key="BoolToColorConverter" />
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+    </Window.Resources>
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*" MinHeight="200"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <!--Navbar-->
+        <Border BorderThickness="1,1,1,1" BorderBrush="WhiteSmoke">
+            <Grid Background="DodgerBlue">
+                <Grid.BitmapEffect>
+                    <DropShadowBitmapEffect ShadowDepth="0.5" Softness="0.6" Direction="-90"/>
+                </Grid.BitmapEffect>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="42"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Click="HomeClick" Style="{StaticResource MenuButton}" />
+
+                <TextBlock Grid.Column="1" Text="Realtime Log" HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="Bold" Foreground="WhiteSmoke" FontSize="16" Padding="0,0,0,2" Margin="0,0,-50,0"/>
+
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="MinimiseButton" Grid.Column="0" Style="{StaticResource WindowsButton}" Click="MinimiseButton_Click">
+                        <Button.Content>
+                            <Viewbox Width="12" Height="12">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="White" Data="M20,14H4V10H20" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="CloseButton" Grid.Column="1" Style="{StaticResource WindowsCloseButton}" Click="CloseButton_Click">
+                        <Button.Content>
+                            <Viewbox Width="12" Height="12">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="White" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+                <Button Grid.Column="2" Click="MenuClick" Background="Transparent"
+                        BorderThickness="0" Visibility="Collapsed">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Ellipse Fill="White" Margin="5"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+
+        <!--Content-->
+        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1,0,1,0">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="65"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Button x:Name="AddButton" Grid.Row="0" HorizontalAlignment="Right" Width="45" Margin="10"
+                    Style="{StaticResource AddButton}" Command="{Binding AddButton}" IsEnabled="{Binding Loading, Converter={StaticResource InverseBoolConverter}}"/>
+
+                <Grid Grid.Row="1" Margin="80,20,75,50" Background="LightGray">
+                    <Grid.BitmapEffect>
+                        <DropShadowBitmapEffect ShadowDepth="1"/>
+                    </Grid.BitmapEffect>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="Silver">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="1"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="1"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="1"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="1"/>
+                                <ColumnDefinition Width="16"/>
+                            </Grid.ColumnDefinitions>
+                            <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
+                            <Rectangle Grid.Column="3" Style="{StaticResource Separator}"/>
+                            <Rectangle Grid.Column="5" Style="{StaticResource Separator}"/>
+                            <Rectangle Grid.Column="7" Style="{StaticResource Separator}"/>
+
+                            <TextBlock Text="Status" Grid.Column="0" Style="{StaticResource TextSection}"/>
+                            <TextBlock Text="Path" Grid.Column="2" HorizontalAlignment="Left" Margin="5,0"
+                                   Style="{StaticResource TextSection}"/>
+                            <TextBlock Text="Active" Grid.Column="4" Style="{StaticResource TextSection}"/>
+                            <TextBlock Text="Exists" Grid.Column="6" Style="{StaticResource TextSection}"/>
+                        </Grid>
+                    </Border>
+                    <ScrollViewer Grid.Row="1">
+                        <ItemsControl x:Name="tStack" ItemsSource="{Binding AllWatchFiles}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding Activate}" 
+                                     Margin="1, 0, 1, 2" Height="35"
+                                    HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Button.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Refresh" Command="{Binding Refresh}"/>
+                                                <MenuItem Header="Remove" Command="{Binding Remove}"/>
+                                                <Separator />
+                                                <MenuItem Header="Cancel"/>
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <Grid>
+                                                        <ContentPresenter x:Name="ProgramButtonPresenter" Content="{TemplateBinding Content}"/>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background">
+                                                            <Setter.Value>
+                                                                <SolidColorBrush Color="#4ca7ff" Opacity="0.1"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.Content>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="1"/>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="1"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="1"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
+                                                <Rectangle Grid.Column="3" Style="{StaticResource Separator}"/>
+                                                <Rectangle Grid.Column="5" Style="{StaticResource Separator}"/>
+
+                                                <Ellipse Grid.Column="0" Fill="{Binding FileWatchStatus, Converter={StaticResource FileWatchStatusToColorConverter}}" Width="10" Height="10"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect ShadowDepth="0"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+                                                <Ellipse Grid.Column="4" Fill="{Binding Active, Converter={StaticResource BoolToColorConverter}}" Width="10" Height="10"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect ShadowDepth="0"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+                                                <Ellipse Grid.Column="6" Fill="{Binding Exists, Converter={StaticResource BoolToColorConverter}}" Width="10" Height="10"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect ShadowDepth="0"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+
+                                                <TextBlock Grid.Column="2" Text="{Binding Path}"
+                                                       TextWrapping="Wrap" Padding="5,0" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Button.Content>
+                                    </Button>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Border>        
+
+        <!--Footer-->
+        <Border Grid.Row="2" BorderThickness="1" BorderBrush="Gray">
+            <Grid Background="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Ellipse Grid.Column="0" Fill="{Binding LoadingStatusFill}" Width="10" Height="10"/>
+                <TextBlock Grid.Column="1" Text="{Binding LoadingStatusText}" VerticalAlignment="Center" Padding="0,0,0,2"/>
+                <Grid Grid.Column="2" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="#" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="1" Text="{Binding ActiveWindows}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

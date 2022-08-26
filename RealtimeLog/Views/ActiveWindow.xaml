@@ -16,20 +16,76 @@
             <RowDefinition Height="60"/>
             <RowDefinition />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.1*"/>
+        </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
+            <Grid Grid.Column="0" Margin="3" Background="White">
+                <Grid.BitmapEffect>
+                    <DropShadowBitmapEffect ShadowDepth="1" Opacity="0.3"/>
+                </Grid.BitmapEffect>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Realtime:" VerticalAlignment="Center"
+                           Grid.Row="0" Grid.Column="0"
+                           Margin="3,0"/>
+
+                <Button Grid.Row="0" Grid.Column="1" Margin="3"/>
+
+                <TextBlock Text="Watch Interval:" Grid.Row="1" Grid.Column="0"
+                           VerticalAlignment="Center" Margin="3,0"/>
+
+                <Grid Grid.Row="1" Grid.Column="1" Background="Red">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" FontSize="20" MinWidth="25" Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    <Grid Grid.Column="1" x:Name="GridRoot" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Background="Gray">
+                        <Grid.RowDefinitions>
+                            <RowDefinition MaxHeight="18"/>
+                            <RowDefinition Height="0.00001*"/>
+                            <RowDefinition MaxHeight="18"/>
+                        </Grid.RowDefinitions>
+                        <RepeatButton x:Name="DecreaseRepeat" Command="ScrollBar.LineDownCommand" Focusable="False">
+                            <Grid>
+                                <Path x:Name="DecreaseArrow" Stroke="Black" StrokeThickness="1" Data="M 0 4 L 8 4 L 4 0 Z"/>
+                            </Grid>
+                        </RepeatButton>
+                        <RepeatButton Grid.Row="2" x:Name="IncreaseRepeat" Command="ScrollBar.LineUpCommand" Focusable="False">
+                            <Grid>
+                                <Path x:Name="IncreaseArrow" Stroke="Black" StrokeThickness="1" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                            </Grid>
+                        </RepeatButton>
+                    </Grid>
+                </Grid>
+            </Grid>
+            
             <!--<Image Source="/Assets/FileWatcher.png" Grid.Column="1"/>-->
 
 
             <Border Background="LightYellow" Padding="5" Grid.Column="2"
-                    HorizontalAlignment="Right" Width="180"
-                    BorderThickness="1" BorderBrush="Black">
+                    HorizontalAlignment="Right" Width="180" Margin="0,3,5,3"
+                    BorderThickness="0.5" BorderBrush="PaleGoldenrod">
+                <Border.BitmapEffect>
+                    <DropShadowBitmapEffect ShadowDepth="5" Direction="-90"
+                                            Opacity="0.6"/>
+                </Border.BitmapEffect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -50,7 +106,8 @@
         </Grid>
 
 
-        <Grid Grid.Row="1" Margin="60,10,60,20" Background="White">
+        <Grid Grid.Row="1" Background="White" Grid.Column="1"
+              Margin="0,10,0,30">
             <Grid.BitmapEffect>
                 <DropShadowBitmapEffect ShadowDepth="1"/>
             </Grid.BitmapEffect>
@@ -64,7 +121,7 @@
                 <TextBlock Text="{Binding Path}" TextWrapping="Wrap" FontSize="11" Padding="0"/>
             </StackPanel>
 
-            <TextBox Grid.Row="1" BorderBrush="Transparent" BorderThickness="0"
+            <TextBox Grid.Row="1" BorderBrush="Black" BorderThickness="0,1,0,0"
                      Background="WhiteSmoke" Padding="3"
                      Text="{Binding OpenFileText}"
                      TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"

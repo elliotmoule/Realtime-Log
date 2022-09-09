@@ -31,4 +31,9 @@ public partial class ActiveWindow : Window
 			t.ScrollToEnd();
 		}
 	}
+
+	private void Clear_Click(object sender, RoutedEventArgs e)
+	{
+		_parent.ClearLog();
+	}
 }

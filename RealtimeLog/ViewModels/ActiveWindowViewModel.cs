@@ -166,6 +166,15 @@ public class ActiveWindowViewModel : ViewModel
 		_parent?.UpdateActiveCount();
 	}
 
+	internal void ClearLog()
+	{
+		if (Exists)
+		{
+			File.WriteAllText(Path, string.Empty);
+			FileRead(FileChangeType.Removal);
+		}
+	}
+
 	private void SafelyCloseWindow()
 	{
 		if (_window != null)
@@ -308,6 +317,34 @@ public class ActiveWindowViewModel : ViewModel
 		{
 			_changeType = value;
 			NotifyChanged(nameof(ChangeType));
+		}
+	}
+
+	private bool _realTime = true;
+	public bool RealTime
+	{
+		get { return _realTime; }
+		set
+		{
+			_realTime = value;
+
+			if (!value)
+			{
+				if (_fileWatcher != null)
+				{
+					_fileWatcher.FileChanged -= FileWatcher_Changed;
+					_fileWatcher.Dispose();
+					_fileWatcher = null;
+				}
+			}
+			else
+			{
+				if (_fileWatcher == null)
+				{
+					WatchFile();
+				}
+			}
+			NotifyChanged(nameof(RealTime));
 		}
 	}
 	#endregion

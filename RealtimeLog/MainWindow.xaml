@@ -130,6 +130,32 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="NavMenuButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" Margin="5,7" Height="25">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="3" Direction="-80" />
+                            </Border.Effect>
+                            <ContentPresenter x:Name="WindowButtonPresenter" Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True" >
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Direction="-90"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <converters:FileWatchStatusToMediaColorConverter x:Key="FileWatchStatusToColorConverter"/>
         <converters:BoolToMediaColorConverter x:Key="BoolToColorConverter" />
         <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
@@ -142,7 +168,7 @@
         </Grid.RowDefinitions>
 
         <!--Navbar-->
-        <Border BorderThickness="1,1,1,1" BorderBrush="WhiteSmoke">
+        <Border BorderThickness="1,1,1,1" BorderBrush="WhiteSmoke" Panel.ZIndex="3">
             <Grid Background="DodgerBlue">
                 <Grid.BitmapEffect>
                     <DropShadowBitmapEffect ShadowDepth="0.5" Softness="0.6" Direction="-90"/>
@@ -195,127 +221,167 @@
 
         <!--Content-->
         <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1,0,1,0">
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="65"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Button x:Name="AddButton" Grid.Row="0" HorizontalAlignment="Right" Width="45" Margin="10"
-                    Style="{StaticResource AddButton}" Command="{Binding AddButton}" IsEnabled="{Binding Loading, Converter={StaticResource InverseBoolConverter}}"/>
-
-                <Grid Grid.Row="1" Margin="80,20,75,50" Background="LightGray">
-                    <Grid.BitmapEffect>
+            <Grid>
+                <Border x:Name="MenuOverlay" Visibility="Collapsed"
+                        Background="WhiteSmoke" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Panel.ZIndex="2" BorderBrush="Gray" BorderThickness="0,0,2,0"
+                        Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Border}}, Path=ActualHeight}">
+                    <Border.BitmapEffect>
                         <DropShadowBitmapEffect ShadowDepth="1"/>
-                    </Grid.BitmapEffect>
+                    </Border.BitmapEffect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="1.5"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="1"/>
+                            <RowDefinition />
+                            <RowDefinition Height="1"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Menu" FontWeight="DemiBold" FontSize="18" HorizontalAlignment="Center" />
+                        <Rectangle Grid.Row="1" Fill="Black" Width="65"/>
+
+                        <Rectangle Grid.Row="3" Fill="Silver" />
+
+                        <StackPanel Grid.Row="4" Margin="20">
+                            <Button Content="Select Startup File" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Save List" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Load List" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Close All" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Clear List" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Help" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Quit" Style="{StaticResource NavMenuButton}"/>
+                        </StackPanel>
+
+                        <Rectangle Grid.Row="5" Fill="Silver" />
+
+                    </Grid>
+                </Border>
+
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="65"/>
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="Silver">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40"/>
-                                <ColumnDefinition Width="1"/>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="1"/>
-                                <ColumnDefinition Width="40"/>
-                                <ColumnDefinition Width="1"/>
-                                <ColumnDefinition Width="40"/>
-                                <ColumnDefinition Width="1"/>
-                                <ColumnDefinition Width="16"/>
-                            </Grid.ColumnDefinitions>
-                            <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
-                            <Rectangle Grid.Column="3" Style="{StaticResource Separator}"/>
-                            <Rectangle Grid.Column="5" Style="{StaticResource Separator}"/>
-                            <Rectangle Grid.Column="7" Style="{StaticResource Separator}"/>
+                    <Button x:Name="AddButton" Grid.Row="0" HorizontalAlignment="Right" Width="45" Margin="10"
+                    Style="{StaticResource AddButton}" Command="{Binding AddButton}" IsEnabled="{Binding Loading, Converter={StaticResource InverseBoolConverter}}"/>
 
-                            <TextBlock Text="Status" Grid.Column="0" Style="{StaticResource TextSection}"/>
-                            <TextBlock Text="Path" Grid.Column="2" HorizontalAlignment="Left" Margin="5,0"
+                    <Grid Grid.Row="1" Margin="80,20,75,50" Background="LightGray">
+                        <Grid.BitmapEffect>
+                            <DropShadowBitmapEffect ShadowDepth="1"/>
+                        </Grid.BitmapEffect>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" BorderThickness="1" BorderBrush="Silver">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="1"/>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="1"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="1"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="1"/>
+                                    <ColumnDefinition Width="16"/>
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
+                                <Rectangle Grid.Column="3" Style="{StaticResource Separator}"/>
+                                <Rectangle Grid.Column="5" Style="{StaticResource Separator}"/>
+                                <Rectangle Grid.Column="7" Style="{StaticResource Separator}"/>
+
+                                <TextBlock Text="Status" Grid.Column="0" Style="{StaticResource TextSection}"/>
+                                <TextBlock Text="Path" Grid.Column="2" HorizontalAlignment="Left" Margin="5,0"
                                    Style="{StaticResource TextSection}"/>
-                            <TextBlock Text="Active" Grid.Column="4" Style="{StaticResource TextSection}"/>
-                            <TextBlock Text="Exists" Grid.Column="6" Style="{StaticResource TextSection}"/>
-                        </Grid>
-                    </Border>
-                    <ScrollViewer Grid.Row="1">
-                        <ItemsControl x:Name="tStack" ItemsSource="{Binding AllWatchFiles}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Command="{Binding Activate}" 
+                                <TextBlock Text="Active" Grid.Column="4" Style="{StaticResource TextSection}"/>
+                                <TextBlock Text="Exists" Grid.Column="6" Style="{StaticResource TextSection}"/>
+                            </Grid>
+                        </Border>
+                        <ScrollViewer Grid.Row="1">
+                            <ItemsControl x:Name="tStack" ItemsSource="{Binding AllWatchFiles}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Command="{Binding Activate}" 
                                      Margin="1, 0, 1, 2" Height="35"
                                     HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Button.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Refresh" Command="{Binding Refresh}"/>
-                                                <MenuItem Header="Remove" Command="{Binding Remove}"/>
-                                                <Separator />
-                                                <MenuItem Header="Cancel"/>
-                                            </ContextMenu>
-                                        </Button.ContextMenu>
-                                        <Button.Template>
-                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                <Border Background="{TemplateBinding Background}">
-                                                    <Grid>
-                                                        <ContentPresenter x:Name="ProgramButtonPresenter" Content="{TemplateBinding Content}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <SolidColorBrush Color="#4ca7ff" Opacity="0.1"/>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                        <Button.Content>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="40"/>
-                                                    <ColumnDefinition Width="1"/>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="1"/>
-                                                    <ColumnDefinition Width="40"/>
-                                                    <ColumnDefinition Width="1"/>
-                                                    <ColumnDefinition Width="40"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
-                                                <Rectangle Grid.Column="3" Style="{StaticResource Separator}"/>
-                                                <Rectangle Grid.Column="5" Style="{StaticResource Separator}"/>
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Refresh" Command="{Binding Refresh}"/>
+                                                    <MenuItem Header="Remove" Command="{Binding Remove}"/>
+                                                    <Separator />
+                                                    <MenuItem Header="Cancel"/>
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Background="{TemplateBinding Background}">
+                                                        <Grid>
+                                                            <ContentPresenter x:Name="ProgramButtonPresenter" Content="{TemplateBinding Content}"/>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <SolidColorBrush Color="#4ca7ff" Opacity="0.1"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <Button.Content>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40"/>
+                                                        <ColumnDefinition Width="1"/>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="1"/>
+                                                        <ColumnDefinition Width="40"/>
+                                                        <ColumnDefinition Width="1"/>
+                                                        <ColumnDefinition Width="40"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
+                                                    <Rectangle Grid.Column="3" Style="{StaticResource Separator}"/>
+                                                    <Rectangle Grid.Column="5" Style="{StaticResource Separator}"/>
 
-                                                <Ellipse Grid.Column="0" Fill="{Binding FileWatchStatus, Converter={StaticResource FileWatchStatusToColorConverter}}" Width="10" Height="10"
+                                                    <Ellipse Grid.Column="0" Fill="{Binding FileWatchStatus, Converter={StaticResource FileWatchStatusToColorConverter}}" Width="10" Height="10"
                                                      HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <Ellipse.Effect>
-                                                        <DropShadowEffect ShadowDepth="0"/>
-                                                    </Ellipse.Effect>
-                                                </Ellipse>
-                                                <Ellipse Grid.Column="4" Fill="{Binding Active, Converter={StaticResource BoolToColorConverter}}" Width="10" Height="10"
+                                                        <Ellipse.Effect>
+                                                            <DropShadowEffect ShadowDepth="0"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
+                                                    <Ellipse Grid.Column="4" Fill="{Binding Active, Converter={StaticResource BoolToColorConverter}}" Width="10" Height="10"
                                                      HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <Ellipse.Effect>
-                                                        <DropShadowEffect ShadowDepth="0"/>
-                                                    </Ellipse.Effect>
-                                                </Ellipse>
-                                                <Ellipse Grid.Column="6" Fill="{Binding Exists, Converter={StaticResource BoolToColorConverter}}" Width="10" Height="10"
+                                                        <Ellipse.Effect>
+                                                            <DropShadowEffect ShadowDepth="0"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
+                                                    <Ellipse Grid.Column="6" Fill="{Binding Exists, Converter={StaticResource BoolToColorConverter}}" Width="10" Height="10"
                                                      HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <Ellipse.Effect>
-                                                        <DropShadowEffect ShadowDepth="0"/>
-                                                    </Ellipse.Effect>
-                                                </Ellipse>
+                                                        <Ellipse.Effect>
+                                                            <DropShadowEffect ShadowDepth="0"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
 
-                                                <TextBlock Grid.Column="2" Text="{Binding Path}"
+                                                    <TextBlock Grid.Column="2" Text="{Binding Path}"
                                                        TextWrapping="Wrap" Padding="5,0" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </Button.Content>
-                                    </Button>
+                                                </Grid>
+                                            </Button.Content>
+                                        </Button>
 
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Border>        
+        </Border>
 
         <!--Footer-->
         <Border Grid.Row="2" BorderThickness="1" BorderBrush="Gray">

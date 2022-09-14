@@ -9,6 +9,10 @@ Some of the current features are:
   - App detects interruptions.
   - App code provides the ability to set a different wait timespan between reads, but yet to add GUI for changing during runtime.
   - Functionality to cancel reading of files (cancellation token provided, with ability to request cancellation).
+  - GUI for changing the interval between file reads.
+  - GUI for stopping/starting log reads (for whether it's real time).
+  - Button to clear the current log.
+  - Auto-scroll to the bottom on log update.
 
 ## Future
 Enhancements will include:

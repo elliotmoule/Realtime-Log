@@ -12,8 +12,7 @@ Some of the current features are:
 
 ## Future
 Enhancements will include:
-  1. GUI for timespan change.
-  2. GUI for stopping a file read operation (request cancellation).
-  3. Saving selected files, so that they're automatically provided on open.
-  4. Activate windows which were open during a previous run.
-  5. Better information around interruptions: change file watch status, and provide a note on the activated window that file shown isn't live.
+  1. Add side menu for adding extra options to the main window (quit, start up active windows, load saved list, clear all, close all).
+  1. Saving selected files, so that they're automatically provided on open.
+  2. Activate windows which were open during a previous run.
+  3. Better information around interruptions: change file watch status, and provide a note on the activated window that file shown isn't live.

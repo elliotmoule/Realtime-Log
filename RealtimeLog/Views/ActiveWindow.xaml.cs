@@ -19,7 +19,7 @@ public partial class ActiveWindow : Window
 	private void ActiveWindow_Closed(object sender, System.EventArgs e)
 	{
 		HasClosed = true;
-		_parent?.ActivateWindow();
+		//_parent?.ActivateWindow();
 	}
 
 	public bool HasClosed { get; private set; }

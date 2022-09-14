@@ -15,7 +15,7 @@ internal class FileContentWatcher : IDisposable
 	public FileContentWatcher(string path, ConcreteTimespan interval = null)
 	{
 		Path = path;
-		Interval = interval ?? new ConcreteTimespan(new TimeSpan(0, 0, 2));
+		Interval = interval ?? new ConcreteTimespan(new TimeSpan(0, 0, ConcreteTimespan.MinValue));
 	}
 
 	public bool StartFileWatch()
@@ -38,6 +38,8 @@ internal class FileContentWatcher : IDisposable
 					{
 						return;
 					}
+
+					OnFileChecked(new FileCheckedEventArgs { CheckTime = DateTime.Now });
 
 					if (fileInfo.Exists)
 					{
@@ -115,8 +117,9 @@ internal class FileContentWatcher : IDisposable
 
 	private void WaitOnInterval()
 	{
-		if (Interval != null)
-			Thread.Sleep(Interval.TimeSpan);
+		Interval ??= new ConcreteTimespan(new TimeSpan(0, 0, ConcreteTimespan.MinValue));
+
+		Thread.Sleep(Interval.TimeSpan);
 	}
 
 	public IEnumerable<string> LastContentRead { get; set; } = null;
@@ -126,17 +129,24 @@ internal class FileContentWatcher : IDisposable
 		FileChanged?.Invoke(this, e);
 	}
 
+	private void OnFileChecked(FileCheckedEventArgs e)
+	{
+		FileChecked?.Invoke(this, e);
+	}
+
 	public void Dispose()
 	{
 
 	}
 
 	public event EventHandler<FileChangedEventArgs> FileChanged;
+	public event EventHandler<FileCheckedEventArgs> FileChecked;
 }
 
 internal class ConcreteTimespan
 {
-	public TimeSpan TimeSpan { get; private set; } = new TimeSpan(0, 0, 2);
+	public TimeSpan TimeSpan { get; private set; } = new TimeSpan(0, 0, MinValue);
+	public static int MinValue { get; } = 2;
 
 	public ConcreteTimespan(TimeSpan timeSpan)
 	{
@@ -149,6 +159,11 @@ internal class FileChangedEventArgs : EventArgs
 {
 	public FileChangeType FileChangeType { get; set; }
 	public DateTime ChangeTime { get; set; }
+}
+
+internal class FileCheckedEventArgs : EventArgs
+{
+	public DateTime CheckTime { get; set; }
 }
 
 public enum FileChangeType

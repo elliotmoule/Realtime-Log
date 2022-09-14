@@ -2,6 +2,8 @@
 using RealtimeLog.Utility;
 using System;
 using System.IO;
+using System.Threading;
+using System.Windows.Media;
 
 namespace RealtimeLog;
 public class ActiveWindowViewModel : ViewModel
@@ -58,13 +60,20 @@ public class ActiveWindowViewModel : ViewModel
 
 	private void WatchFile()
 	{
-		_fileWatcher = new FileContentWatcher(Path);
+		_fileWatcher = new FileContentWatcher(Path, new ConcreteTimespan(new TimeSpan(0, 0, WatchInterval)));
 
 		_fileWatcher.FileChanged += FileWatcher_Changed;
+
+		_fileWatcher.FileChecked += FileWatcher_FileChecked;
 
 		_fileWatcher.StartFileWatch();
 
 		FileRead(FileChangeType.Initial);
+	}
+
+	private void FileWatcher_FileChecked(object sender, FileCheckedEventArgs e)
+	{	
+		DateTimeLastChecked = e.CheckTime;
 	}
 
 	private void FileWatcher_Changed(object sender, FileChangedEventArgs e)
@@ -181,13 +190,7 @@ public class ActiveWindowViewModel : ViewModel
 		{
 			if (!_window.HasClosed)
 			{
-				if (_fileWatcher != null)
-				{
-					_fileWatcher.FileChanged -= FileWatcher_Changed;
-					_fileWatcher.Dispose();
-					_fileWatcher = null;
-					OpenFileText = string.Empty;
-				}
+				CloseFileWatcher();
 				_window.Close();
 			}
 
@@ -217,6 +220,18 @@ public class ActiveWindowViewModel : ViewModel
 					_window = null;
 				}
 			});
+		}
+	}
+
+	private void CloseFileWatcher()
+	{
+		if (_fileWatcher != null)
+		{
+			_fileWatcher.StopFileWatch();
+			_fileWatcher.FileChanged -= FileWatcher_Changed;
+			_fileWatcher.FileChecked -= FileWatcher_FileChecked;
+			_fileWatcher.Dispose();
+			_fileWatcher = null;
 		}
 	}
 
@@ -309,6 +324,33 @@ public class ActiveWindowViewModel : ViewModel
 		}
 	}
 
+	private DateTime _dateTimeLastChecked = default;
+	public DateTime DateTimeLastChecked
+	{
+		get { return _dateTimeLastChecked; }
+		set
+		{
+			if (value != _dateTimeLastChecked)
+			{
+				LastCheckedBrush = Brushes.Green;
+			}
+			_dateTimeLastChecked = value;
+			NotifyChanged(nameof(DateTimeLastChecked));
+
+			if (LastCheckedBrush == Brushes.Green)
+			{
+				AsyncWorker.Execute(() =>
+				{
+					Thread.Sleep(1000);
+					return true;
+				}, response =>
+				{
+					LastCheckedBrush = Brushes.Black;
+				});
+			}
+		}
+	}
+
 	private FileChangeType _changeType = FileChangeType.None;
 	public FileChangeType ChangeType
 	{
@@ -330,12 +372,7 @@ public class ActiveWindowViewModel : ViewModel
 
 			if (!value)
 			{
-				if (_fileWatcher != null)
-				{
-					_fileWatcher.FileChanged -= FileWatcher_Changed;
-					_fileWatcher.Dispose();
-					_fileWatcher = null;
-				}
+				CloseFileWatcher();
 			}
 			else
 			{
@@ -345,6 +382,35 @@ public class ActiveWindowViewModel : ViewModel
 				}
 			}
 			NotifyChanged(nameof(RealTime));
+		}
+	}
+
+	private int _oldValue = ConcreteTimespan.MinValue;
+	private int _watchInterval = ConcreteTimespan.MinValue;
+	public int WatchInterval
+	{
+		get { return _watchInterval; }
+		set
+		{
+			_watchInterval = value;
+			NotifyChanged(nameof(WatchInterval));
+
+			if (_fileWatcher != null && _oldValue != value && value >= ConcreteTimespan.MinValue)
+			{
+				_fileWatcher.Interval = new ConcreteTimespan(new TimeSpan(0, 0, value));
+			}
+			_oldValue = value;
+		}
+	}
+
+	private Brush _lastCheckedBrush = Brushes.Black;
+	public Brush LastCheckedBrush
+	{
+		get { return _lastCheckedBrush; }
+		set
+		{
+			_lastCheckedBrush = value;
+			NotifyChanged(nameof(LastCheckedBrush));
 		}
 	}
 	#endregion

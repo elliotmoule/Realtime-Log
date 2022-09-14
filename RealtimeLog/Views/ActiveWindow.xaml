@@ -4,12 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:RealtimeLog.Converters"
+        xmlns:controls="clr-namespace:RealtimeLog.Controls"
         xmlns:local="clr-namespace:RealtimeLog"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow"
         Title="{Binding WatchFileName}" Height="500" Width="550" MinHeight="400" MinWidth="450"
         Background="WhiteSmoke">
     <Window.Resources>
         <converters:WatcherChangeTypesToStringConverter x:Key="WatcherChangeTypesToStringConverter" />
+
+        <Style x:Key="Separator" TargetType="Rectangle">
+            <Setter Property="Fill" Value="Silver"/>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -40,55 +45,39 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
+                    <ColumnDefinition Width="1"/>
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
+                
                 <TextBlock Text="Realtime:" VerticalAlignment="Center"
                            Grid.Row="0" Grid.Column="0"
                            Margin="3,0"/>
 
-                <CheckBox Grid.Row="0" Grid.Column="1" Margin="3"
+                <Rectangle Grid.Column="1" Style="{StaticResource Separator}"/>
+
+                <CheckBox Grid.Row="0" Grid.Column="2" Margin="3"
                           VerticalAlignment="Center" HorizontalAlignment="Center"
                           IsChecked="{Binding RealTime}"/>
 
                 <TextBlock Text="Watch Interval:" Grid.Row="1" Grid.Column="0"
                            VerticalAlignment="Center" Margin="3,0"/>
 
-                <Grid Grid.Row="1" Grid.Column="1" Background="Red">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" FontSize="20" MinWidth="25" Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"/>
-                    <Grid Grid.Column="1" x:Name="GridRoot" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Background="Gray">
-                        <Grid.RowDefinitions>
-                            <RowDefinition MaxHeight="18"/>
-                            <RowDefinition Height="0.00001*"/>
-                            <RowDefinition MaxHeight="18"/>
-                        </Grid.RowDefinitions>
-                        <RepeatButton x:Name="DecreaseRepeat" Command="ScrollBar.LineDownCommand" Focusable="False">
-                            <Grid>
-                                <Path x:Name="DecreaseArrow" Stroke="Black" StrokeThickness="1" Data="M 0 4 L 8 4 L 4 0 Z"/>
-                            </Grid>
-                        </RepeatButton>
-                        <RepeatButton Grid.Row="2" x:Name="IncreaseRepeat" Command="ScrollBar.LineUpCommand" Focusable="False">
-                            <Grid>
-                                <Path x:Name="IncreaseArrow" Stroke="Black" StrokeThickness="1" Data="M 0 0 L 4 4 L 8 0 Z"/>
-                            </Grid>
-                        </RepeatButton>
-                    </Grid>
-                </Grid>
+                <Rectangle Grid.Row="1" Grid.Column="1" Style="{StaticResource Separator}"/>
+
+                <controls:IntegerSpinner Grid.Row="1" Grid.Column="2" IntValue="{Binding WatchInterval}" Min="2" 
+                                         Margin="5,0,0,0"/>
 
                 <TextBlock Text="Clear Log:" Grid.Row="2" VerticalAlignment="Center" Margin="3,0" />
-                <Button Grid.Row="2" Grid.Column="1" Margin="3" Content="X"
+
+                <Rectangle Grid.Row="2" Grid.Column="1" Style="{StaticResource Separator}"/>
+
+                <Button Grid.Row="2" Grid.Column="2" Margin="3" Content="X"
                         Click="Clear_Click"/>
             </Grid>
             
-            <!--<Image Source="/Assets/FileWatcher.png" Grid.Column="1"/>-->
-
-
             <Border Background="LightYellow" Padding="5" Grid.Column="2"
-                    HorizontalAlignment="Right" Width="180" Margin="0,3,5,3"
-                    BorderThickness="0.5" BorderBrush="PaleGoldenrod" Height="60" VerticalAlignment="Top">
+                    HorizontalAlignment="Right" Width="160" Margin="0,3,5,3"
+                    BorderThickness="0.5" BorderBrush="PaleGoldenrod" Height="70" VerticalAlignment="Top">
                 <Border.BitmapEffect>
                     <DropShadowBitmapEffect ShadowDepth="5" Direction="-90"
                                             Opacity="0.6"/>
@@ -97,17 +86,23 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Changed:" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Change Type:" FontWeight="Bold" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Changed:" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Change Type:" FontWeight="DemiBold" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Check:" FontWeight="DemiBold" VerticalAlignment="Center"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DateTimeChanged,StringFormat=t}" VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ChangeType, Converter={StaticResource WatcherChangeTypesToStringConverter}}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DateTimeChanged,StringFormat=t}"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ChangeType, Converter={StaticResource WatcherChangeTypesToStringConverter}}"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DateTimeLastChecked, StringFormat=hh:mm:ss tt}"
+                               Foreground="{Binding LastCheckedBrush}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>
         </Grid>

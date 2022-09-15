@@ -13,10 +13,14 @@ Some of the current features are:
   - GUI for stopping/starting log reads (for whether it's real time).
   - Button to clear the current log.
   - Auto-scroll to the bottom on log update.
+  - Added a side menu for adding extra options to the main window (quit, start up active windows, load saved list, clear all, close all, & help).
+  - Saving selected files, so that they're automatically provided on open.
+  - Activate windows which were saved as Active.
+  - Top right note on Active windows now shows when it was last checked.
+  - Last checked time will flash green as it's been updated (1 second on/off).
+  - Able to save windows list to file.
+  - Able to load windows list from file.
+  - All active windows will close when main window is closed.
 
 ## Future
 Enhancements will include:
-  1. Add side menu for adding extra options to the main window (quit, start up active windows, load saved list, clear all, close all).
-  1. Saving selected files, so that they're automatically provided on open.
-  2. Activate windows which were open during a previous run.
-  3. Better information around interruptions: change file watch status, and provide a note on the activated window that file shown isn't live.

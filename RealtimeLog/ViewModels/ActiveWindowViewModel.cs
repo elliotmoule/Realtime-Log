@@ -25,6 +25,7 @@ public class ActiveWindowViewModel : ViewModel
 
 		if (active)
 		{
+			Active = true;
 			ActivateWindow();
 		}
 	}
@@ -44,7 +45,7 @@ public class ActiveWindowViewModel : ViewModel
 	public IViewAction Refresh { get; set; }
 	public IViewAction Remove { get; set; }
 
-	private void DoActivate()
+	internal void DoActivate()
 	{
 		UpdatePathStatus();
 		ToggleActive();
@@ -193,9 +194,10 @@ public class ActiveWindowViewModel : ViewModel
 	{
 		if (_window != null)
 		{
+			CloseFileWatcher();
+
 			if (!_window.HasClosed)
 			{
-				CloseFileWatcher();
 				_window.Close();
 			}
 

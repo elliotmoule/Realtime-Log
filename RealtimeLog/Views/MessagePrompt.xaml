@@ -1,0 +1,40 @@
+﻿<Window x:Class="RealtimeLog.Views.MessagePrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RealtimeLog.Views"
+        mc:Ignorable="d" WindowStyle="None" WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Height="200" Width="300" AllowsTransparency="True" Background="White"
+        MouseDown="Window_MouseDown" BorderThickness="1" BorderBrush="Gray">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition />
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.Background>
+                <SolidColorBrush Color="DodgerBlue" Opacity="1"/>
+            </Grid.Background>
+            <Grid.BitmapEffect>
+                <DropShadowBitmapEffect ShadowDepth="0.5" Softness="0.6" Direction="-90"/>
+            </Grid.BitmapEffect>
+            
+            <TextBlock Text="{Binding Caption}" Margin="10,0" FontWeight="DemiBold" VerticalAlignment="Center"
+                       Foreground="White"/>
+        </Grid>
+
+        <TextBlock Grid.Row="1" Text="{Binding Message}" Margin="20" TextAlignment="Justify" TextWrapping="Wrap"/>
+
+        <Button Grid.Row="2" HorizontalAlignment="Right"
+                Width="70" Height="30" Margin="5" Background="White"
+                Content="OK" Command="{Binding OK}">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="Gray" Opacity="0.3"/>
+            </Button.BorderBrush>
+        </Button>
+    </Grid>
+</Window>

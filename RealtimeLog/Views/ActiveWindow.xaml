@@ -6,19 +6,42 @@
         xmlns:converters="clr-namespace:RealtimeLog.Converters"
         xmlns:controls="clr-namespace:RealtimeLog.Controls"
         xmlns:local="clr-namespace:RealtimeLog"
-        mc:Ignorable="d" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow"
-        Title="{Binding WatchFileName}" Height="500" Width="550" MinHeight="400" MinWidth="450"
-        Background="WhiteSmoke">
+        mc:Ignorable="d" WindowStartupLocation="CenterOwner" WindowStyle="None"
+        AllowsTransparency="True" ResizeMode="CanResize" Background="WhiteSmoke"
+        MouseDown="Window_MouseDown"
+        Title="{Binding WatchFileName}" Height="500" Width="550" MinHeight="400" MinWidth="450" >
     <Window.Resources>
         <converters:WatcherChangeTypesToStringConverter x:Key="WatcherChangeTypesToStringConverter" />
 
         <Style x:Key="Separator" TargetType="Rectangle">
             <Setter Property="Fill" Value="Silver"/>
         </Style>
+        <Style x:Key="WindowsCloseButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter x:Name="WindowButtonPresenter" Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Red"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Background" Value="#00FF0000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="105"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -27,7 +50,33 @@
             <ColumnDefinition Width="0.1*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+        <Grid Grid.Row="0" Grid.ColumnSpan="3" Background="DodgerBlue">
+            <Grid.BitmapEffect>
+                <DropShadowBitmapEffect ShadowDepth="0.5" Softness="0.6" Direction="-90"/>
+            </Grid.BitmapEffect>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            
+            <Image Grid.Column="0" Source="/Assets/FileWatcher.png" />
+            
+            <TextBlock Grid.Column="1" Text="{Binding WatchFileName}" FontWeight="DemiBold"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+
+            <Button Grid.Column="2" Style="{StaticResource WindowsCloseButton}" Click="CloseButton_Click">
+                <Button.Content>
+                    <Viewbox Width="12" Height="12">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="White" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button.Content>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition />
@@ -35,9 +84,10 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Margin="10,5" Background="White">
-                <Grid.BitmapEffect>
-                    <DropShadowBitmapEffect ShadowDepth="1" Opacity="0.3"/>
-                </Grid.BitmapEffect>
+                <Grid.Effect>
+                    <DropShadowEffect ShadowDepth="5" Direction="-70"
+                                            Opacity="0.6"/>
+                </Grid.Effect>
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -71,17 +121,17 @@
 
                 <Rectangle Grid.Row="2" Grid.Column="1" Style="{StaticResource Separator}"/>
 
-                <Button Grid.Row="2" Grid.Column="2" Margin="3" Content="X"
-                        Click="Clear_Click"/>
+                <Button Grid.Row="2" Grid.Column="2" Margin="3" Content="Clear"
+                        Click="Clear_Click" Background="White"/>
             </Grid>
             
             <Border Background="LightYellow" Padding="5" Grid.Column="2"
                     HorizontalAlignment="Right" Width="160" Margin="0,3,5,3"
                     BorderThickness="0.5" BorderBrush="PaleGoldenrod" Height="70" VerticalAlignment="Top">
-                <Border.BitmapEffect>
-                    <DropShadowBitmapEffect ShadowDepth="5" Direction="-90"
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="5" Direction="-70"
                                             Opacity="0.6"/>
-                </Border.BitmapEffect>
+                </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -108,7 +158,7 @@
         </Grid>
 
 
-        <Grid Grid.Row="1" Background="White" Grid.Column="1"
+        <Grid Grid.Row="2" Background="White" Grid.Column="1"
               Margin="0,10,0,30">
             <Grid.BitmapEffect>
                 <DropShadowBitmapEffect ShadowDepth="1"/>

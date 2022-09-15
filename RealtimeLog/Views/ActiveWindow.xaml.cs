@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace RealtimeLog;
 
@@ -19,7 +20,6 @@ public partial class ActiveWindow : Window
 	private void ActiveWindow_Closed(object sender, System.EventArgs e)
 	{
 		HasClosed = true;
-		//_parent?.ActivateWindow();
 	}
 
 	public bool HasClosed { get; private set; }
@@ -35,5 +35,18 @@ public partial class ActiveWindow : Window
 	private void Clear_Click(object sender, RoutedEventArgs e)
 	{
 		_parent.ClearLog();
+	}
+
+	private void CloseButton_Click(object sender, RoutedEventArgs e)
+	{
+		_parent.DoActivate();
+	}
+
+	private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+	{
+		if (e.LeftButton == MouseButtonState.Pressed)
+		{
+			DragMove();
+		}
 	}
 }

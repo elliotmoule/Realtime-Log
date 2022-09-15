@@ -2,6 +2,7 @@
 using CODE.Framework.Wpf.Mvvm;
 using FileFilterX.Library;
 using Microsoft.Win32;
+using RealtimeLog.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +20,7 @@ public class RealtimeLogViewModel : ViewModel
 	MainWindow _parent;
 	public RealtimeLogViewModel(MainWindow parent)
 	{
+		IsFormEnabled = false;
 		_parent = parent;
 		AddActions();
 	}
@@ -62,7 +64,21 @@ public class RealtimeLogViewModel : ViewModel
 
 	private void MainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
 	{
+		if (Properties.Settings.Default.AutoLoad is string json
+				&& !string.IsNullOrWhiteSpace(json))
+		{
+			var loadedFiles = JsonSerializer.Deserialize<Dictionary<string, bool>>(json);
+
+			foreach (var item in loadedFiles)
+			{
+				AllWatchFiles.Add(new ActiveWindowViewModel(this, item.Key, item.Value));
+			}
+
+			UpdateActiveCount();
+		}
+
 		Loading = false;
+		IsFormEnabled = true;
 	}
 
 	private void DoFileSelect()
@@ -134,12 +150,15 @@ public class RealtimeLogViewModel : ViewModel
 
 	internal void MainWindow_Closing()
 	{
-
+		foreach (var activeWindow in AllWatchFiles.Where(x => x.Active))
+		{
+			activeWindow.DoActivate();
+		}
 	}
 
 	private void DoHelp()
 	{
-
+		MessagePrompt("This is a help dialog!", "Help!");
 	}
 
 	private void DoClearList()
@@ -167,6 +186,9 @@ public class RealtimeLogViewModel : ViewModel
 				&& File.Exists(file))
 		{
 			IsFormEnabled = false;
+			Loading = true;
+
+			AllWatchFiles.Clear();
 
 			string json = File.ReadAllText(file);
 
@@ -177,12 +199,16 @@ public class RealtimeLogViewModel : ViewModel
 				AllWatchFiles.Add(new ActiveWindowViewModel(this, item.Key, item.Value));
 			}
 
+			UpdateActiveCount();
+
+			Loading = false;
 			IsFormEnabled = true;
 		}
 	}
 
 	private void DoSaveList()
 	{
+		Loading = true;
 		var saveFileDialog = new SaveFileDialog
 		{
 			CreatePrompt = false,
@@ -210,13 +236,32 @@ public class RealtimeLogViewModel : ViewModel
 
 			File.WriteAllText(Path.ChangeExtension(saveFileDialog.FileName, "rtls"), json);
 
+			MessagePrompt("Realtime Log settings saved.");
+
 			IsFormEnabled = true;
 		}
+		Loading = false;
 	}
 
 	private void DoAutoLoadSelect()
 	{
+		Loading = true;
+		var file = Load();
+		if (!string.IsNullOrWhiteSpace(file)
+				&& File.Exists(file))
+		{
+			IsFormEnabled = false;
 
+			string json = File.ReadAllText(file);
+
+			Properties.Settings.Default.AutoLoad = json;
+			Properties.Settings.Default.Save();
+
+			MessagePrompt("Application will now startup with the provided Windows.", "Auto Load Set");
+
+			IsFormEnabled = true;
+		}
+		Loading = false;
 	}
 
 	private string Load()
@@ -245,6 +290,14 @@ public class RealtimeLogViewModel : ViewModel
 	internal void UpdateActiveCount()
 	{
 		NotifyChanged(nameof(ActiveWindows));
+	}
+
+	internal void MessagePrompt(string message, string caption = "Message")
+	{
+		var prompt = new MessagePromptViewModel(message, caption);
+		prompt.ShowDialog();
+
+		Console.WriteLine("**** Returned dialog result:" + prompt.DialogResult);
 	}
 	#endregion
 

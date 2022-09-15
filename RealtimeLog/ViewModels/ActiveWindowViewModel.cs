@@ -12,7 +12,7 @@ public class ActiveWindowViewModel : ViewModel
 	ActiveWindow _window;
 	FileContentWatcher _fileWatcher;
 
-	public ActiveWindowViewModel(RealtimeLogViewModel parent, string path)
+	public ActiveWindowViewModel(RealtimeLogViewModel parent, string path, bool active = false)
 	{
 		if (string.IsNullOrWhiteSpace(path))
 		{
@@ -22,6 +22,11 @@ public class ActiveWindowViewModel : ViewModel
 		AddActions();
 		Id = Guid.NewGuid();
 		Path = path;
+
+		if (active)
+		{
+			ActivateWindow();
+		}
 	}
 
 	#region Actions
@@ -72,7 +77,7 @@ public class ActiveWindowViewModel : ViewModel
 	}
 
 	private void FileWatcher_FileChecked(object sender, FileCheckedEventArgs e)
-	{	
+	{
 		DateTimeLastChecked = e.CheckTime;
 	}
 
@@ -274,6 +279,7 @@ public class ActiveWindowViewModel : ViewModel
 		{
 			_active = value;
 			NotifyChanged(nameof(Active));
+			_parent?.Invalidate();
 		}
 	}
 

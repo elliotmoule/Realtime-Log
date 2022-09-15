@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace RealtimeLog;
 /// <summary>
@@ -13,13 +14,14 @@ public partial class MainWindow : Window
 	public MainWindow()
 	{
 		InitializeComponent();
+		PreviewMouseDown += MainWindow_PreviewMouseDown;
 		viewModel = new RealtimeLogViewModel(this);
 		DataContext = viewModel;
 	}
 
-	private void HomeClick(object sender, RoutedEventArgs e)
+	private void MainWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		viewModel?.HomeButton_Click();
+		viewModel?.AnyWhere_Click(e);
 	}
 
 	private void MenuClick(object sender, RoutedEventArgs e)
@@ -72,6 +74,8 @@ public partial class MainWindow : Window
 	{
 		viewModel?.AddButton_Click();
 	}
+
+
 
 	#region NotifyChanged
 	public event PropertyChangedEventHandler PropertyChanged;

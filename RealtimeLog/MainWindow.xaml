@@ -8,7 +8,7 @@
         mc:Ignorable="d" WindowStyle="None" ResizeMode="CanResize"
         Title="File Watcher" Height="450" Width="750"
         MouseDown="Window_MouseDown" Closing="Window_Closing" PreviewKeyDown="Window_PreviewKeyDown"
-        AllowsTransparency="True" Background="#19FFFFFF">
+        AllowsTransparency="True" Background="#19FFFFFF" IsEnabled="{Binding IsFormEnabled}">
     <Window.Resources>
         <Style x:Key="AddButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Template">
@@ -135,7 +135,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" Margin="5,7" Height="25">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" Margin="5,7" Height="25"
+                                MinWidth="148">
                             <Border.Effect>
                                 <DropShadowEffect ShadowDepth="3" Direction="-80" />
                             </Border.Effect>
@@ -143,10 +144,18 @@
                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True" >
-                                <Setter TargetName="border" Property="Effect">
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Effect">                                    
                                     <Setter.Value>
                                         <DropShadowEffect Direction="-90"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="Gray"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Opacity="0"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -178,7 +187,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Click="HomeClick" Style="{StaticResource MenuButton}" />
+                <Button Grid.Column="0" Click="MenuClick" Style="{StaticResource MenuButton}" />
 
                 <TextBlock Grid.Column="1" Text="Realtime Log" HorizontalAlignment="Center" VerticalAlignment="Center"
                            FontWeight="Bold" Foreground="WhiteSmoke" FontSize="16" Padding="0,0,0,2" Margin="0,0,-50,0"/>
@@ -207,14 +216,6 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-                <Button Grid.Column="2" Click="MenuClick" Background="Transparent"
-                        BorderThickness="0" Visibility="Collapsed">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Ellipse Fill="White" Margin="5"/>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
             </Grid>
         </Border>
 
@@ -222,8 +223,9 @@
         <!--Content-->
         <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1,0,1,0">
             <Grid>
-                <Border x:Name="MenuOverlay" Visibility="Collapsed"
-                        Background="WhiteSmoke" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <!--Menu Overlay-->
+                <Border x:Name="MenuOverlay"
+                        Background="WhiteSmoke" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top"
                         Panel.ZIndex="2" BorderBrush="Gray" BorderThickness="0,0,2,0"
                         Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Border}}, Path=ActualHeight}">
                     <Border.BitmapEffect>
@@ -246,13 +248,13 @@
                         <Rectangle Grid.Row="3" Fill="Silver" />
 
                         <StackPanel Grid.Row="4" Margin="20">
-                            <Button Content="Select Startup File" Style="{StaticResource NavMenuButton}"/>
-                            <Button Content="Save List" Style="{StaticResource NavMenuButton}"/>
-                            <Button Content="Load List" Style="{StaticResource NavMenuButton}"/>
-                            <Button Content="Close All" Style="{StaticResource NavMenuButton}"/>
-                            <Button Content="Clear List" Style="{StaticResource NavMenuButton}"/>
-                            <Button Content="Help" Style="{StaticResource NavMenuButton}"/>
-                            <Button Content="Quit" Style="{StaticResource NavMenuButton}"/>
+                            <Button Content="Select Startup File"   Style="{StaticResource NavMenuButton}" Command="{Binding AutoLoadSelect}"/>
+                            <Button Content="Save List"             Style="{StaticResource NavMenuButton}" Command="{Binding SaveList}"/>
+                            <Button Content="Load List"             Style="{StaticResource NavMenuButton}" Command="{Binding LoadList}"/>
+                            <Button Content="Close All"             Style="{StaticResource NavMenuButton}" Command="{Binding CloseAll}"/>
+                            <Button Content="Clear List"            Style="{StaticResource NavMenuButton}" Command="{Binding ClearList}"/>
+                            <Button Content="Help"                  Style="{StaticResource NavMenuButton}" Command="{Binding Help}"/>
+                            <Button Content="Quit"                  Style="{StaticResource NavMenuButton}" Command="{Binding Quit}"/>
                         </StackPanel>
 
                         <Rectangle Grid.Row="5" Fill="Silver" />
@@ -260,6 +262,7 @@
                     </Grid>
                 </Border>
 
+                <!--Main Content-->
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="65"/>

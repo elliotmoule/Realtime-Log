@@ -145,7 +145,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Effect">                                    
+                                <Setter TargetName="border" Property="Effect">
                                     <Setter.Value>
                                         <DropShadowEffect Direction="-90"/>
                                     </Setter.Value>
@@ -168,6 +168,7 @@
         <converters:FileWatchStatusToMediaColorConverter x:Key="FileWatchStatusToColorConverter"/>
         <converters:BoolToMediaColorConverter x:Key="BoolToColorConverter" />
         <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <Grid Background="White">
         <Grid.RowDefinitions>
@@ -191,6 +192,9 @@
 
                 <TextBlock Grid.Column="1" Text="Realtime Log" HorizontalAlignment="Center" VerticalAlignment="Center"
                            FontWeight="Bold" Foreground="WhiteSmoke" FontSize="16" Padding="0,0,0,2" Margin="0,0,-50,0"/>
+
+                <TextBlock Grid.Column="1" Text="[Debug]" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Pink"
+                           Margin="350,0,0,0" FontWeight="Bold" Visibility="{Binding IsDebug, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                 <Grid Grid.Column="2">
                     <Grid.ColumnDefinitions>

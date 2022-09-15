@@ -386,5 +386,16 @@ public class RealtimeLogViewModel : ViewModel
 			Invalidate();
 		}
 	}
+	public bool IsDebug
+	{
+		get
+		{
+			var result = false;
+#if DEBUG
+			result = true;
+#endif
+			return result;
+		}
+	}
 	#endregion
 }

@@ -190,6 +190,14 @@ public class ActiveWindowViewModel : ViewModel
 		}
 	}
 
+	internal void OpenLog()
+	{
+		if (Exists)
+		{
+			System.Diagnostics.Process.Start("notepad.exe", Path);
+		}
+	}
+
 	private void SafelyCloseWindow()
 	{
 		if (_window != null)

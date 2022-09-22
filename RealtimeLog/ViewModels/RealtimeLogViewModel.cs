@@ -174,7 +174,7 @@ public class RealtimeLogViewModel : ViewModel
 		{
 			for (int i = 0; i < AllWatchFiles.Count; i++)
 			{
-				AllWatchFiles[i].ActivateWindow();
+				AllWatchFiles[i].DoActivate();
 			}
 		}
 	}

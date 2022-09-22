@@ -117,12 +117,14 @@
                 <controls:IntegerSpinner Grid.Row="1" Grid.Column="2" IntValue="{Binding WatchInterval}" Min="2" 
                                          Margin="5,0,0,0"/>
 
-                <TextBlock Text="Clear Log:" Grid.Row="2" VerticalAlignment="Center" Margin="3,0" />
+                <TextBlock Text="Log Options:" Grid.Row="2" VerticalAlignment="Center" Margin="3,0" />
 
                 <Rectangle Grid.Row="2" Grid.Column="1" Style="{StaticResource Separator}"/>
 
-                <Button Grid.Row="2" Grid.Column="2" Margin="3" Content="Clear"
-                        Click="Clear_Click" Background="White"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="0,3" HorizontalAlignment="Center">
+                    <Button Content="Open" Click="Open_Click" Background="White" Margin="2,0"/>
+                    <Button Content="Clear" Click="Clear_Click" Background="White" Margin="2,0"/>
+                </StackPanel>
             </Grid>
             
             <Border Background="LightYellow" Padding="5" Grid.Column="2"

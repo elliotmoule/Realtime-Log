@@ -37,6 +37,11 @@ public partial class ActiveWindow : Window
 		_parent.ClearLog();
 	}
 
+	private void Open_Click(object sender, RoutedEventArgs e)
+	{
+		_parent.OpenLog();
+	}
+
 	private void CloseButton_Click(object sender, RoutedEventArgs e)
 	{
 		_parent.DoActivate();

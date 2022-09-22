@@ -91,8 +91,7 @@ public class ActiveWindowViewModel : ViewModel
 	{
 		if (Active && Exists)
 		{
-			if (changeTypes == FileChangeType.Addition || changeTypes == FileChangeType.Removal
-				|| changeTypes == FileChangeType.Initial)
+			if (changeTypes != FileChangeType.None && changeTypes != FileChangeType.Interrupted)
 			{
 				var text = File.ReadAllText(Path);
 				OpenFileText = text;

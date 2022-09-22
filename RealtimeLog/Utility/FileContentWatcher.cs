@@ -80,11 +80,20 @@ internal class FileContentWatcher : IDisposable
 		}
 	}
 
-	private IEnumerable<string> ReadContent()
+	private List<string> ReadContent()
 	{
 		try
 		{
-			return File.ReadAllLines(Path);
+			var readContents = new List<string>();
+			using (var reader = new StreamReader(Path, System.Text.Encoding.UTF8))
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					readContents.Add(line);
+				}
+			}
+			return readContents;
 		}
 		catch
 		{
@@ -92,7 +101,7 @@ internal class FileContentWatcher : IDisposable
 		}
 	}
 
-	private FileChangeType CompareContent(IEnumerable<string> newContent)
+	private FileChangeType CompareContent(List<string> newContent)
 	{
 		var changeType = FileChangeType.None;
 
@@ -104,9 +113,23 @@ internal class FileContentWatcher : IDisposable
 		{
 			if (LastContentRead != null)
 			{
-				var diff = newContent.Except(LastContentRead).ToList();
+				var newRead = newContent.Count;
+				var oldRead = LastContentRead.Count;
 
-				changeType = diff.Count == 0 ? (newContent.Count() < LastContentRead.Count() ? FileChangeType.Removal : FileChangeType.None) : FileChangeType.Addition;
+				if (newRead > oldRead)
+				{
+					changeType = FileChangeType.Addition;
+				}
+				else if(newRead < oldRead)
+				{
+					changeType = FileChangeType.Removal;
+				}
+				else
+				{
+					// Same number of lines. Do Diff
+					var diff = newContent.Except(LastContentRead);
+					changeType = diff.Count() > 0 ? FileChangeType.Update : FileChangeType.None;
+				}
 			}
 
 			LastContentRead = newContent;
@@ -122,7 +145,7 @@ internal class FileContentWatcher : IDisposable
 		Thread.Sleep(Interval.TimeSpan);
 	}
 
-	public IEnumerable<string> LastContentRead { get; set; } = null;
+	public List<string> LastContentRead { get; set; } = null;
 
 	private void OnFileChanged(FileChangedEventArgs e)
 	{
@@ -172,5 +195,6 @@ public enum FileChangeType
 	Initial,
 	Removal,
 	Addition,
+	Update,
 	Interrupted
 }

@@ -313,8 +313,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Button Command="{Binding Activate}" 
-                                     Margin="1, 0, 1, 2" Height="35"
-                                    HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
+                                                Margin="1, 0, 1, 2" Height="35"
+                                                HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
                                             <Button.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Refresh" Command="{Binding Refresh}"/>

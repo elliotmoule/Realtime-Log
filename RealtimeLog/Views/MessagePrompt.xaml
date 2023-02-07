@@ -29,12 +29,21 @@
 
         <TextBlock Grid.Row="1" Text="{Binding Message}" Margin="20" TextAlignment="Justify" TextWrapping="Wrap"/>
 
-        <Button Grid.Row="2" HorizontalAlignment="Right"
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
                 Width="70" Height="30" Margin="5" Background="White"
                 Content="OK" Command="{Binding OK}">
-            <Button.BorderBrush>
-                <SolidColorBrush Color="Gray" Opacity="0.3"/>
-            </Button.BorderBrush>
-        </Button>
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="Gray" Opacity="0.3"/>
+                </Button.BorderBrush>
+            </Button>
+            <Button
+                Width="70" Height="30" Margin="5" Background="White"
+                Content="Cancel" Command="{Binding Cancel}" Visibility="{Binding ShowCancel}">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="Gray" Opacity="0.3"/>
+                </Button.BorderBrush>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using CODE.Framework.Wpf.Mvvm;
 using RealtimeLog.Utility;
+using RealtimeLog.ViewModels;
 using System;
 using System.IO;
 using System.Threading;
@@ -34,7 +35,6 @@ public class ActiveWindowViewModel : ViewModel
 	private void AddActions()
 	{
 		Activate = new ViewAction(id: "Activate", caption: "Activate Window",
-			canExecute: (a, o) => Exists && FileWatchStatus == FileWatchStatus.Good,
 			execute: (a, o) => DoActivate());
 
 		Refresh = new ViewAction("Refresh", execute: (a, o) => DoRefresh());
@@ -47,9 +47,21 @@ public class ActiveWindowViewModel : ViewModel
 
 	internal void DoActivate()
 	{
-		UpdatePathStatus();
-		ToggleActive();
-		ActivateWindow();
+		if (Exists && FileWatchStatus == FileWatchStatus.Good)
+		{
+			UpdatePathStatus();
+			ToggleActive();
+			ActivateWindow();
+		}
+		else
+		{
+			var prompt = new MessagePromptViewModel("The selected log could not be found.\r\n\r\nWould you like to remove it?", "Missing Log", true);
+			prompt.ShowDialog();
+			if (prompt.DialogResult.HasValue && prompt.DialogResult.Value)
+			{
+				DoRemove();
+			}
+		}
 	}
 
 	private void DoRefresh()

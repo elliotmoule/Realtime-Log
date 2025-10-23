@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Reference Include="FileFilterX.Library">
-      <HintPath>..\..\FileFilterX\FileFilterX.Library\bin\Release\FileFilterX.Library.dll</HintPath>
+      <HintPath>..\..\FileFilterX\FileFilterX.Library\bin\Debug\FileFilterX.Library.dll</HintPath>
     </Reference>
   </ItemGroup>
 

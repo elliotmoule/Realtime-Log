@@ -4,11 +4,11 @@ namespace RealtimeLog;
 
 public static class ProjectConstants
 {
-	public static Brush GoodColor = Brushes.Green;
-	public static Brush ErrorColor = Brushes.Red;
-	public static Brush WarningColor = Brushes.Yellow;
+    public static readonly Brush GoodColor = Brushes.Green;
+    public static readonly Brush ErrorColor = Brushes.Red;
+    public static readonly Brush WarningColor = Brushes.Yellow;
 
-	public static Brush LoadingColor = Brushes.Red;
-	public static Brush NotLoadingColor = Brushes.Green;
-	public static Brush UnknownBrush = Brushes.LightGray;
+    public static readonly Brush LoadingColor = Brushes.Red;
+    public static readonly Brush NotLoadingColor = Brushes.Green;
+    public static readonly Brush UnknownBrush = Brushes.LightGray;
 }

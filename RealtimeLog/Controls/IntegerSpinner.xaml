@@ -12,11 +12,11 @@
             <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
         <TextBox Grid.Column="0"
-                 x:Name="TextInput"
+                 x:Name="IntegerInput"
                  Text="{Binding IntValue, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, UpdateSourceTrigger=PropertyChanged}"
                  TextAlignment="Center"
                  VerticalContentAlignment="Center"
-                 PreviewKeyDown="TextInput_PreviewKeyDown"
+                 PreviewKeyDown="IntegerInput_PreviewKeyDown"
                  BorderThickness="0.5"/>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
